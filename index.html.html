@@ -1,0 +1,399 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Hibbaan - Gamer & Coder</title>
+  <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@500&display=swap" rel="stylesheet">
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+      font-family: 'Orbitron', sans-serif;
+    }
+
+    body {
+      background: #000;
+      color: white;
+      overflow-x: hidden;
+      transition: background 0.4s, color 0.4s;
+    }
+
+    canvas {
+      position: fixed;
+      top: 0;
+      left: 0;
+      z-index: -1;
+    }
+
+    .container {
+      max-width: 1200px;
+      margin: auto;
+      padding: 60px 20px;
+      text-align: center;
+      animation: fadeIn 1.5s ease-in-out;
+    }
+
+    h1 {
+      font-size: 72px;
+      color: #bc13fe;
+      text-shadow: 0 0 20px #bc13fe, 0 0 30px #00f0ff;
+      animation: glowText 2s infinite alternate;
+    }
+
+    .section {
+      background: rgba(255, 255, 255, 0.03);
+      border: 1px solid #bc13fe44;
+      border-radius: 20px;
+      padding: 50px;
+      margin-top: 60px;
+      box-shadow: 0 0 25px #bc13fe33;
+      transition: transform 0.3s;
+    }
+
+    .section:hover {
+      transform: scale(1.02);
+      box-shadow: 0 0 40px #00f0ff88;
+    }
+
+    h2 {
+      font-size: 36px;
+      color: #00f0ff;
+      margin-bottom: 25px;
+      text-shadow: 0 0 14px #00f0ff;
+    }
+
+    p, li, a {
+      font-size: 18px;
+      line-height: 1.8;
+      text-shadow: 0 0 5px #bc13fe;
+    }
+
+    .skills ul, .hobbies ul {
+      list-style: none;
+      padding: 0;
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: center;
+      gap: 20px;
+    }
+
+    .skills li, .hobbies li {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      padding: 14px 26px;
+      border: 1px solid #00f0ff;
+      border-radius: 20px;
+      background: rgba(0, 240, 255, 0.1);
+      transition: transform 0.3s;
+    }
+
+    .skills li:hover, .hobbies li:hover {
+      transform: scale(1.1);
+      box-shadow: 0 0 12px #00f0ff;
+    }
+
+    .skills img, .hobbies img {
+      width: 24px;
+      height: 24px;
+    }
+
+    .contact-icons {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      gap: 30px;
+      margin-bottom: 30px;
+      flex-wrap: wrap;
+    }
+
+    .contact a.icon-link {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      margin: 0;
+      color: #00f0ff;
+      text-decoration: none;
+      transition: transform 0.3s;
+      font-size: 16px;
+    }
+
+    .contact a.icon-link:hover {
+      transform: scale(1.1);
+      text-shadow: 0 0 12px #bc13fe;
+    }
+
+    .contact-btn {
+      padding: 14px 28px;
+      border-radius: 30px;
+      border: 2px solid #00f0ff;
+      background: transparent;
+      color: #00f0ff;
+      font-size: 18px;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      animation: pulse 2s infinite;
+    }
+
+    .contact-btn:hover {
+      background: #00f0ff;
+      color: black;
+      box-shadow: 0 0 20px #00f0ff;
+    }
+
+    footer {
+      text-align: center;
+      margin-top: 80px;
+      font-size: 16px;
+      color: #ccc;
+      text-shadow: 0 0 4px #333;
+    }
+
+    /* Dark/Light mode toggle button */
+    .theme-toggle {
+      position: fixed;
+      top: 24px;
+      right: 24px;
+      z-index: 10;
+      background: rgba(0,0,0,0.7);
+      border: 2px solid #00f0ff;
+      border-radius: 50%;
+      width: 54px;
+      height: 54px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      transition: background 0.3s, border 0.3s;
+      box-shadow: 0 0 12px #00f0ff44;
+    }
+    .theme-toggle img {
+      width: 32px;
+      height: 32px;
+      filter: drop-shadow(0 0 8px #bc13fe);
+      transition: filter 0.3s;
+    }
+    .theme-toggle:hover {
+      background: #00f0ff;
+      border-color: #bc13fe;
+    }
+    .theme-toggle:hover img {
+      filter: drop-shadow(0 0 12px #fff);
+    }
+
+    /* Light mode styles */
+    body.light-mode {
+      background: #f7f7fa;
+      color: #222;
+    }
+    body.light-mode .section {
+      background: rgba(0,0,0,0.03);
+      border: 1px solid #00f0ff44;
+      box-shadow: 0 0 25px #00f0ff22;
+    }
+    body.light-mode h1 {
+      color: #00f0ff;
+      text-shadow: 0 0 20px #00f0ff, 0 0 30px #bc13fe;
+    }
+    body.light-mode h2 {
+      color: #bc13fe;
+      text-shadow: 0 0 14px #bc13fe;
+    }
+    body.light-mode p, 
+    body.light-mode li, 
+    body.light-mode a {
+      color: #222;
+      text-shadow: 0 0 5px #00f0ff33;
+    }
+    body.light-mode .skills li, 
+    body.light-mode .hobbies li {
+      border: 1px solid #bc13fe;
+      background: rgba(188, 19, 254, 0.08);
+    }
+    body.light-mode .skills li:hover, 
+    body.light-mode .hobbies li:hover {
+      box-shadow: 0 0 12px #bc13fe;
+    }
+    body.light-mode .contact-btn {
+      border-color: #bc13fe;
+      color: #bc13fe;
+      background: transparent;
+    }
+    body.light-mode .contact-btn:hover {
+      background: #bc13fe;
+      color: #fff;
+      box-shadow: 0 0 20px #bc13fe;
+    }
+    body.light-mode .theme-toggle {
+      background: #fff;
+      border-color: #bc13fe;
+      box-shadow: 0 0 12px #bc13fe44;
+    }
+    body.light-mode .theme-toggle img {
+      filter: drop-shadow(0 0 8px #00f0ff);
+    }
+    body.light-mode footer {
+      color: #444;
+      text-shadow: 0 0 4px #eee;
+    }
+
+    @keyframes glowText {
+      from { text-shadow: 0 0 10px #bc13fe; }
+      to { text-shadow: 0 0 25px #00f0ff; }
+    }
+
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(20px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    @keyframes pulse {
+      0% { transform: scale(1); }
+      50% { transform: scale(1.05); }
+      100% { transform: scale(1); }
+    }
+  </style>
+</head>
+
+<body>
+  <!-- Theme Toggle Button -->
+  <div class="theme-toggle" id="themeToggle" title="Toggle dark/light mode">
+    <img id="themeIcon" src="https://img.icons8.com/ios-filled/50/ffffff/crescent-moon.png" alt="Toggle Theme"/>
+  </div>
+
+  <canvas id="bg"></canvas>
+
+  <div class="container">
+    <h1>Hibbaan</h1>
+
+    <div class="section about">
+      <h2>About Me</h2>
+      <p>
+        I'm Hibbaan — a dedicated gamer and innovative student who merges tech with passion. Whether I'm playing Free Fire or writing code in C++, I push limits. I explore tech tools, AI, creative design, and love football. Web design, coding, and gaming are not hobbies — they are my zone.
+      </p>
+    </div>
+
+    <div class="section skills">
+      <h2>Tech Skills</h2>
+      <ul>
+        <li><img src="https://img.icons8.com/color/48/html-5--v1.png" alt="HTML">HTML</li>
+        <li><img src="https://img.icons8.com/color/48/css3.png" alt="CSS">CSS</li>
+        <li><img src="https://img.icons8.com/color/48/javascript--v1.png" alt="JavaScript">JavaScript</li>
+        <li><img src="https://img.icons8.com/color/48/python--v1.png" alt="Python">Python</li>
+        <li><img src="https://img.icons8.com/color/48/c-plus-plus-logo.png" alt="C++">C / C++ / C#</li>
+        <li><img src="https://img.icons8.com/offices/48/react.png" alt="React">React.js</li>
+        <li><img src="https://img.icons8.com/fluency/48/node-js.png" alt="Node">Node.js</li>
+        <li><img src="https://img.icons8.com/fluency/48/artificial-intelligence.png" alt="AI">AI Tools</li>
+        <li><img src="https://img.icons8.com/external-flatart-icons-outline-flatarticons/48/external-cloud-computing-cloud-computing-flatart-icons-outline-flatarticons.png" alt="Cloud">Cloud</li>
+        <li><img src="https://img.icons8.com/fluency/48/monitor.png" alt="Tech">Tech Enthusiast</li>
+      </ul>
+    </div>
+
+    <div class="section hobbies">
+      <h2>Hobbies</h2>
+      <ul>
+        <li><img src="https://img.icons8.com/emoji/48/football.png" alt="Football">Football</li>
+        <li><img src="https://img.icons8.com/color/48/controller.png" alt="Gaming">Gaming</li>
+        <li><img src="https://img.icons8.com/color/48/cricket.png" alt="Cricket">Cricket</li>
+      </ul>
+    </div>
+
+    <div class="section contact">
+      <h2>Contact</h2>
+      <div class="contact-icons">
+        <!-- Instagram -->
+        <a class="icon-link" href="https://www.instagram.com/_hibbaan45?igsh=dTBzcDBkbnRldTA4" target="_blank" rel="noopener noreferrer">
+          <img src="https://img.icons8.com/ios-filled/100/ffffff/instagram-new.png" width="40" style="filter: drop-shadow(0 0 10px #bc13fe);" alt="Instagram" />
+          Instagram
+        </a>
+        <!-- WhatsApp -->
+        <a class="icon-link" href="https://wa.me/916005151812" target="_blank" rel="noopener noreferrer">
+          <img src="https://img.icons8.com/color/96/000000/whatsapp--v1.png" width="40" style="filter: drop-shadow(0 0 10px #25d366);" alt="WhatsApp" />
+          WhatsApp
+        </a>
+        <!-- Phone -->
+        <a class="icon-link" href="tel:6005151812">
+          <img src="https://img.icons8.com/material-outlined/48/00f0ff/phone.png" width="40" style="filter: drop-shadow(0 0 10px #00f0ff);" alt="Phone" />
+          Call
+        </a>
+      </div>
+      <button class="contact-btn" onclick="window.location.href='tel:6005151812'">
+        <img src="https://img.icons8.com/material-outlined/24/00f0ff/phone.png" alt="Phone" style="vertical-align: middle; margin-right: 8px;"/> Contact No.
+      </button>
+    </div>
+
+    <footer>
+      Created by Hibbaan © 2025 — Powered by gaming, code, and cosmic energy ✨
+    </footer>
+  </div>
+
+  <script>
+    // Theme toggle logic
+    const themeToggle = document.getElementById('themeToggle');
+    const themeIcon = document.getElementById('themeIcon');
+    const prefersDark = window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches;
+    let isDark = localStorage.getItem('hibbaan-theme') === 'dark' || (!localStorage.getItem('hibbaan-theme') && prefersDark);
+
+    function setTheme(dark) {
+      if (dark) {
+        document.body.classList.remove('light-mode');
+        themeIcon.src = "https://img.icons8.com/ios-filled/50/ffffff/crescent-moon.png";
+        themeIcon.alt = "Switch to light mode";
+        localStorage.setItem('hibbaan-theme', 'dark');
+      } else {
+        document.body.classList.add('light-mode');
+        themeIcon.src = "https://img.icons8.com/ios-filled/50/000000/sun--v1.png";
+        themeIcon.alt = "Switch to dark mode";
+        localStorage.setItem('hibbaan-theme', 'light');
+      }
+    }
+    setTheme(isDark);
+
+    themeToggle.onclick = function() {
+      isDark = !document.body.classList.contains('light-mode');
+      setTheme(!isDark);
+    };
+
+    // Three.js starfield
+    const scene = new THREE.Scene();
+    const camera = new THREE.PerspectiveCamera(75, window.innerWidth/window.innerHeight, 0.1, 1000);
+    const renderer = new THREE.WebGLRenderer({canvas: document.getElementById('bg'), alpha: true});
+    renderer.setSize(window.innerWidth, window.innerHeight);
+
+    const geometry = new THREE.BufferGeometry();
+    const vertices = [];
+
+    for (let i = 0; i < 5000; i++) {
+      vertices.push((Math.random() - 0.5) * 1500);
+      vertices.push((Math.random() - 0.5) * 1500);
+      vertices.push((Math.random() - 0.5) * 1500);
+    }
+
+    geometry.setAttribute('position', new THREE.Float32BufferAttribute(vertices, 3));
+    const material = new THREE.PointsMaterial({color: 0xbc13fe, size: 1});
+    const stars = new THREE.Points(geometry, material);
+    scene.add(stars);
+
+    camera.position.z = 500;
+
+    function animate() {
+      requestAnimationFrame(animate);
+      stars.rotation.x += 0.0006;
+      stars.rotation.y += 0.0008;
+      renderer.render(scene, camera);
+    }
+
+    animate();
+    window.addEventListener("resize", () => {
+      camera.aspect = window.innerWidth / window.innerHeight;
+      camera.updateProjectionMatrix();
+      renderer.setSize(window.innerWidth, window.innerHeight);
+    });
+  </script>
+</body>
+
+</html>
